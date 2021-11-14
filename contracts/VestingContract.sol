@@ -43,10 +43,10 @@ contract VestingContract {
     }    
 
     function claim() external {
-        Recipient memory r = recipients[msg.sender];
+        Recipient storage r = recipients[msg.sender];
         require(r.nReceivedPayment < numberOfPeriods, "All payments are paid");
 
-        if ((r.vestingStartDate + r.nReceivedPayment * vestingPeriod ) >= block.timestamp ){
+        if ((r.vestingStartDate + r.nReceivedPayment * vestingPeriod ) <= block.timestamp ){
             uint256 _timePassed = block.timestamp - (r.vestingStartDate + r.nReceivedPayment * vestingPeriod);
             uint256 _newPeriods = _timePassed % vestingPeriod - r.nReceivedPayment;
             r.nReceivedPayment += _newPeriods;
