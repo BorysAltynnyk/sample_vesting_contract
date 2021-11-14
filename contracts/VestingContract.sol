@@ -32,8 +32,8 @@ contract VestingContract {
     _;
     }
 
-    function getVestingPeriod() public view returns (uint256) {
-        return vestingPeriod;
+    function setVestingPeriod(uint256 _vestingPeriod) external onlyOwner {
+        vestingPeriod = _vestingPeriod;
     }
 
     // TODO amount to share has to be multiple of vestingPeriod
