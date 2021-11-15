@@ -28,7 +28,7 @@ contract VestingContract {
     }
 
     modifier onlyOwner() {
-    require(owner == msg.sender, "Only owner can run this function");
+    require(owner == msg.sender, "Only owner can call this function");
     _;
     }
 
@@ -47,7 +47,7 @@ contract VestingContract {
 
     // TODO amount to share has to be multiple of vestingPeriod
     function addRecipient(uint256 _amountToShare, address _recipient) external onlyOwner{
-        require (_amountToShare <= token.balanceOf(address(this)), 'Not enough fish to share!');
+        require (_amountToShare <= token.balanceOf(address(this)), 'Not enough tokens to share!');
         recipients[_recipient] = Recipient(block.timestamp, _amountToShare, 0);
     }    
 
