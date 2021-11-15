@@ -109,7 +109,6 @@ describe("Vesting contract", () => {
     const addr2Balance = await contract.getTokenBalance(await addr2.getAddress());
     await expect(addr1Balance/Math.pow(10,18)).to.be.equal(TOKENS_COUNT/5*4);
     await expect(addr2Balance/Math.pow(10,18)).to.be.equal(TOKENS_COUNT/5*1);
-
   })  
 
 });
