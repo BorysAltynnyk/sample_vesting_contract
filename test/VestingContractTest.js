@@ -55,7 +55,7 @@ describe("Vesting contract", () => {
 
   })
 
-  it("should NOT give more than 5 portion after more than max periods are passed", async()=>{
+  it("should NOT give more than 5 portion after all periods are passed", async()=>{
     const VestingContract = await ethers.getContractFactory("VestingContract");
     const contract = await VestingContract.deploy();
     await contract.deployed();
