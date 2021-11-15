@@ -56,12 +56,12 @@ contract VestingContract {
         require(r.nReceivedPayment < numberOfPeriods, "All payments are paid");
         uint256 _timePassed = block.timestamp - (r.vestingStartDate + r.nReceivedPayment * vestingPeriod);
         uint256 _newPeriods = _timePassed / vestingPeriod - r.nReceivedPayment;
-        // token.transfer(msg.sender, 40);
+        uint256 oneShare  = r.totalTokensToShare / numberOfPeriods; 
         if (_newPeriods > 0 && _newPeriods < numberOfPeriods - r.nReceivedPayment ){
             r.nReceivedPayment += _newPeriods;
-            token.transfer(msg.sender, _newPeriods * 20);
+            token.transfer(msg.sender, _newPeriods * oneShare);
        }else {
-           token.transfer(msg.sender, (numberOfPeriods - r.nReceivedPayment) * 20);
+           token.transfer(msg.sender, (numberOfPeriods - r.nReceivedPayment) * oneShare);
        }
 
     }
