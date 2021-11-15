@@ -68,4 +68,37 @@ describe("Vesting contract", () => {
     const newBalance = await contract.getTokenBalance(await addr1.getAddress());
     expect(newBalance - oldBalance).to.equal(TOKENS_COUNT);
   })
+
+  it("should allow users to claim token in 5 periods", async()=>{
+    const VestingContract = await ethers.getContractFactory("VestingContract");
+    const contract = await VestingContract.deploy();
+    await contract.deployed();
+
+    const [_, addr1] = await ethers.getSigners();  
+
+    await contract.addRecipient(TOKENS_COUNT, await addr1.getAddress());
+    for (let iteration = 1; iteration <= NUMBER_OF_TRANSHES; iteration++) {
+      const oldBalance = await contract.getTokenBalance(await addr1.getAddress());
+
+      await ethers.provider.send("evm_increaseTime", [VESTING_PERIOD])
+      await contract.connect(addr1).claim()
+  
+      const newBalance = await contract.getTokenBalance(await addr1.getAddress());
+      expect(newBalance - oldBalance).to.equal(TOKENS_COUNT/NUMBER_OF_TRANSHES);
+    } 
+  })
+  
+  it("should not allow to add recipient with amount that exceed total tokens count", async()=>{
+
+  })
+
+  it("should not allow to add recipient from not owner address", async()=>{
+
+  })
+
+  it("should share token correctly between two recipients", async()=>{
+
+  })
+
+
 });

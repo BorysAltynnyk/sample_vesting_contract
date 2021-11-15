@@ -17,7 +17,7 @@ contract VestingContract {
     struct Recipient{
         uint256 vestingStartDate;
         uint256 totalTokensToShare;
-        uint256 nReceivedPayment;
+        uint256 tokensClaimed;
     }
 
     constructor() {
@@ -53,16 +53,19 @@ contract VestingContract {
 
     function claim() external {
         Recipient storage r = recipients[msg.sender];
-        require(r.nReceivedPayment < numberOfPeriods, "All payments are paid");
-        uint256 _timePassed = block.timestamp - (r.vestingStartDate + r.nReceivedPayment * vestingPeriod);
-        uint256 _newPeriods = _timePassed / vestingPeriod - r.nReceivedPayment;
-        uint256 oneShare  = r.totalTokensToShare / numberOfPeriods; 
-        if (_newPeriods > 0 && _newPeriods < numberOfPeriods - r.nReceivedPayment ){
-            r.nReceivedPayment += _newPeriods;
-            token.transfer(msg.sender, _newPeriods * oneShare);
-       }else {
-           token.transfer(msg.sender, (numberOfPeriods - r.nReceivedPayment) * oneShare);
-       }
 
+        require(r.tokensClaimed < r.totalTokensToShare, "All payments are paid");
+
+        uint256 _timeDiff = block.timestamp - r.vestingStartDate;
+        uint256 transhesToShare = _timeDiff / vestingPeriod;
+        if (transhesToShare > numberOfPeriods) {
+            transhesToShare = 5;
+        }
+
+        uint256 tokensToTransfer = transhesToShare * (r.totalTokensToShare/numberOfPeriods);
+        tokensToTransfer = (tokensToTransfer - r.tokensClaimed);
+        
+        token.transfer(msg.sender, tokensToTransfer);
+        r.tokensClaimed = r.tokensClaimed + tokensToTransfer;
     }
 }
