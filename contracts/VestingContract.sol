@@ -58,7 +58,7 @@ contract VestingContract {
     function claim() external {
         Recipient storage r = recipients[msg.sender];
 
-        require(r.tokensClaimed < r.totalTokensToShare, "All payments are paid");
+        require(r.tokensClaimed > r.totalTokensToShare, "All payments are paid");
 
         uint256 _timeDiff = block.timestamp - r.vestingStartDate;
         uint256 transhesToShare = _timeDiff / vestingPeriod;
