@@ -6,9 +6,6 @@ const NUMBER_OF_TRANSHES = 5
 const TOKENS_COUNT = 100
 
 describe("Vesting contract", () => {
-
-
-
   it("should init default vesting period", async () => {
     const VestingContract = await ethers.getContractFactory("VestingContract");
     const contract = await VestingContract.deploy();
