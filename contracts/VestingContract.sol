@@ -2,6 +2,10 @@
 pragma solidity >=0.7.0 <0.9.0;
 
 import "./Tokens.sol";
+import "hardhat/console.sol";
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+
+
 
 /// @title PortionalVesting
 contract VestingContract {
@@ -20,11 +24,11 @@ contract VestingContract {
         uint256 tokensClaimed;
     }
 
-    constructor() {
+    constructor(uint256 _vestingPeriod, uint _numberOfPeriods, uint256 _totalTokensCount) {
         owner = msg.sender;
-        vestingPeriod = 5 days;
-        numberOfPeriods = 5;
-        token = new AbramisBrama("AbramisBrama", "ABR");
+        vestingPeriod = _vestingPeriod;
+        numberOfPeriods = _numberOfPeriods;
+        token = new AbramisBrama("AbramisBrama", "ABR", _totalTokensCount);
     }
 
     modifier onlyOwner() {
@@ -45,10 +49,10 @@ contract VestingContract {
         vestingPeriod = _vestingPeriod;
     }
 
-    // TODO amount to share has to be multiple of vestingPeriod
     function addRecipient(uint256 _amountToShare, address _recipient) external onlyOwner{
-        require (_amountToShare <= token.balanceOf(address(this)), 'Not enough tokens to share!');
-        recipients[_recipient] = Recipient(block.timestamp, _amountToShare, 0);
+        require (_amountToShare * 10**uint256(18) <= token.balanceOf(address(this)), 'Not enough tokens to share!');
+        
+        recipients[_recipient] = Recipient(block.timestamp, _amountToShare * 10**uint256(18), 0);
     }    
 
     function claim() external {
